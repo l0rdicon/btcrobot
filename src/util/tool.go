@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-// 必须是int类型，否则panic
+// Must be of type int, otherwise panic
 func MustInt(s string) int {
 	i, err := strconv.Atoi(s)
 	if err != nil {
@@ -16,7 +16,6 @@ func MustInt(s string) int {
 	return i
 }
 
-// 将in slice通过sep连接起来
 func Join(ins []int, sep string) string {
 	strSlice := make([]string, len(ins))
 	for i, one := range ins {

@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-// 内嵌bytes.Buffer，支持连写
+// bytes.Buffer
 type Buffer struct {
 	*bytes.Buffer
 }
@@ -18,7 +18,7 @@ func NewBuffer() *Buffer {
 func (this *Buffer) Append(s string) *Buffer {
 	defer func() {
 		if err := recover(); err != nil {
-			logger.Errorln("*****内存不够了！******")
+			logger.Errorln("***** Not enough memory！******")
 		}
 	}()
 	this.Buffer.WriteString(s)

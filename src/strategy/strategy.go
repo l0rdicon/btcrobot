@@ -311,7 +311,7 @@ func Buy() string {
 			nMinTradeAmount = 0.01
 		}
 		if nAmount < nMinTradeAmount {
-			warning += "没有足够的法币余额"
+			warning += "Balance below minimium trade amount"
 			logger.Infoln(warning)
 			PrevTrade = "buy"
 			PrevBuyPirce = nPrice
@@ -321,15 +321,15 @@ func Buy() string {
 		amount = fmt.Sprintf("%02f", nAmount)
 	}
 
-	warning += "---->数量" + amount
+	warning += "---->Quanity" + amount
 
 	buyID := buy(price, amount)
 	if buyID == "-1" {
-		warning += " [模拟]"
+		warning += " [Simulation]"
 	} else if buyID == "0" {
-		warning += "[委托失败]"
+		warning += "[Buy Failure]"
 	} else {
-		warning += "[委托成功]" + buyID
+		warning += "[Buy successful]" + buyID
 	}
 
 	logger.Infoln(warning)
@@ -349,7 +349,7 @@ func Sell() string {
 	//compute the amount
 	Available_coin := GetAvailable_coin()
 	if Available_coin < 0.01 {
-		warning = "没有足够的币"
+		warning = "Balance is to low sell"
 		logger.Infoln(warning)
 		PrevTrade = "sell"
 		PrevBuyPirce = 0
@@ -370,11 +370,11 @@ func Sell() string {
 
 	sellID := sell(price, amount)
 	if sellID == "-1" {
-		warning += " [模拟]"
+		warning += " [Simulation]"
 	} else if sellID == "0" {
-		warning += "[委托失败]"
+		warning += "[Sell failure]"
 	} else {
-		warning += "[委托成功]" + sellID
+		warning += "[Sell successful]" + sellID
 	}
 
 	logger.Infoln(warning)
@@ -397,6 +397,7 @@ func GetOrder(order_id string) (ret bool, order Order) {
 	return gTradeAPI.GetOrder(order_id)
 }
 
+// Need to make a function for us/can 
 func GetAvailable_cny() float64 {
 	account, ret := GetAccount()
 	if !ret {
@@ -445,6 +446,7 @@ func GetAvailable_ltc() float64 {
 	return numAvailable_ltc
 }
 
+// This definetly needs updating 
 func GetAvailable_coin() float64 {
 	symbol := Option["symbol"]
 	if symbol == "btc_cny" {
@@ -468,7 +470,7 @@ func processStoploss(Price float64) bool {
 	//do sell when price is below stoploss point
 	stoplossPrice := PrevBuyPirce * (1 - stoploss*0.01)
 	if Price <= stoplossPrice {
-		warning := "stop loss, 卖出Sell Out---->"
+		warning := "stop loss, Sell Out---->"
 		logger.Infoln(warning)
 		logger.Infoln(Price, stoplossPrice, PrevBuyPirce, stoploss)
 
@@ -486,10 +488,10 @@ func processTimeout() bool {
 	for tm, id := range recancelbuyOrders {
 		warning := fmt.Sprintf("<-----re-cancel %s-------------->", id)
 		if CancelOrder(id) {
-			warning += "[Cancel委托成功]"
+			warning += "[Cancel Successful]"
 			delete(recancelbuyOrders, tm)
 		} else {
-			warning += "[Cancel委托失败]"
+			warning += "[Cancel Failed]"
 			errno := GetLastError()
 			if errno == 10009 {
 				logger.Infoln(errno)
@@ -507,11 +509,11 @@ func processTimeout() bool {
 		logger.Infoln(warning)
 		sellID := Sell()
 		if sellID != "0" {
-			warning += "[re-sell委托成功]"
+			warning += "[re-sell Successful]"
 			delete(resellOrders, tm)
 			sellOrders[time.Now()] = sellID //append or just update "set"
 		} else {
-			warning += "[re-sell委托失败]"
+			warning += "[re-sell Failed]"
 		}
 
 		logger.Infoln(warning)
@@ -541,7 +543,7 @@ func processTimeout() bool {
 					continue
 				}
 
-				if order.Deal_amount > 0.0001 { //部分成交的买卖单
+				if order.Deal_amount > 0.0001 { //Part of the sale of a single transaction
 					buy_average = (buy_amount*buy_average + order.Deal_amount*order.Price) / (buy_amount + order.Deal_amount)
 					logger.Infof("buy_average partial=%0.02f,%0.02f,%0.02f\n", buy_average, order.Deal_amount, buy_amount)
 					dealOrders[tm] = order
@@ -551,9 +553,9 @@ func processTimeout() bool {
 				warning := fmt.Sprintf("<-----buy Delegation timeout, cancel %s[deal:%f]-------------->", id, order.Deal_amount)
 				logger.Infoln(order)
 				if CancelOrder(id) {
-					warning += "[buy Cancel委托成功]"
+					warning += "[buy Cancel Successful]"
 				} else {
-					warning += "[buy Cancel委托失败]"
+					warning += "[buy Cancel Failed]"
 					recancelbuyOrders[time.Now()] = id
 				}
 
@@ -597,30 +599,30 @@ func processTimeout() bool {
 
 					warning := fmt.Sprintf("<-----sell Delegation timeout, cancel %s[deal:%f]-------------->", id, order.Deal_amount)
 					if CancelOrder(id) {
-						warning += "[sell Cancel委托成功]"
+						warning += "[sell Cancel Successful]"
 
 						delete(sellOrders, tm)
 						//update to delete, start a new order for sell in below
 
 						sell_amount := order.Amount - order.Deal_amount
 
-						logger.Infoln("卖一", (orderBook.Asks[len(orderBook.Asks)-1]))
-						logger.Infoln("买一", orderBook.Bids[0])
+						logger.Infoln("Sell One", (orderBook.Asks[len(orderBook.Asks)-1]))
+						logger.Infoln("Buy One", orderBook.Bids[0])
 
-						warning := "timeout, resell 卖出Sell Out---->限价单"
+						warning := "timeout, resell Sell Out----> Limit Order"
 						tradePrice := fmt.Sprintf("%f", orderBook.Asks[len(orderBook.Asks)-1].Price-0.01)
 						tradeAmount := fmt.Sprintf("%f", sell_amount)
 						sellID := sell(tradePrice, tradeAmount)
 						if sellID != "0" {
-							warning += "[resell 委托成功]"
+							warning += "[resell Successful]"
 							sellOrders[time.Now()] = sellID //append or just update "set"
 						} else {
-							warning += "[resell 委托失败]"
+							warning += "[resell Failed]"
 							resellOrders[time.Now()] = tradeAmount
 						}
 						logger.Infoln(warning)
 					} else {
-						warning += "[sell Cancel委托失败]"
+						warning += "[sell Cancel Failed]"
 
 						errno := GetLastError()
 						if errno == 10009 {

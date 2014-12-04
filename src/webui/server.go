@@ -27,12 +27,12 @@ func webui() {
 		err := LoadSecretOption()
 		if err != nil {
 			logger.Errorln(err)
-			return `{"errno": 1, "msg":", "读取秘钥配置数据失败"}`
+			return `{"errno": 1, "msg":", "Read the secret key configuration failed"}`
 		}
 		Option_json, err := json.Marshal(SecretOption)
 		if err != nil {
 			logger.Errorln(err)
-			return `{"errno": 1, "msg":", "解析秘钥配置数据失败"}`
+			return `{"errno": 1, "msg":", "Failed to resolve secret key"}`
 		}
 
 		return string(Option_json)
@@ -88,16 +88,15 @@ func webui() {
 		SecretOption["ok_partner10"] = req.FormValue("ok_partner10")
 		SecretOption["ok_secret_key10"] = req.FormValue("ok_secret_key10")
 
-		// 更新个人信息
 		err := SaveSecretOption()
 		if err != nil {
-			fmt.Fprint(res, "写入秘钥配置数据失败")
+			fmt.Fprint(res, "Write secret key configuration data failed")
 			return
 		}
 
-		fmt.Fprint(res, "更新秘钥配置成功!")
+		fmt.Fprint(res, "Update secret key configuration was successful!")
 
-		go email.TriggerTrender("btcrobot测试邮件，您能收到这封邮件说明您的SMTP配置成功，来自星星的机器人")
+		go email.TriggerTrender("btcrobot Test message, you receive this message indicates that your SMTP configuration is successful")
 
 		return
 	})
@@ -107,12 +106,12 @@ func webui() {
 		err := LoadOption()
 		if err != nil {
 			logger.Errorln(err)
-			return `{"errno": 1, "msg":", "读取引擎配置数据失败"}`
+			return `{"errno": 1, "msg":", "Could not read the pasring engine configuration"}`
 		}
 		Option_json, err := json.Marshal(Option)
 		if err != nil {
 			logger.Errorln(err)
-			return `{"errno": 1, "msg":", "解析引擎配置数据失败"}`
+			return `{"errno": 1, "msg":", "Error in parsing engines config"}`
 		}
 
 		return string(Option_json)
@@ -133,7 +132,6 @@ func webui() {
 
 		Option["discipleValue"] = req.FormValue("discipleValue")
 
-		// open传递过来的是“on”或没传递
 		if req.FormValue("enable_email") == "on" {
 			Option["enable_email"] = "1"
 		} else {
@@ -165,14 +163,13 @@ func webui() {
 
 		Option["stoploss"] = req.FormValue("stoploss")
 
-		// 更新个人信息
 		err := SaveOption()
 		if err != nil {
 			fmt.Fprint(res, "写入引擎配置数据失败")
 			return
 		}
 
-		fmt.Fprint(res, "更新引擎配置成功!")
+		fmt.Fprint(res, "Could not save parsing engire configuration data")
 	})
 
 	m.Get("/trade", func() string {
@@ -182,13 +179,13 @@ func webui() {
 		err := LoadTrade()
 		if err != nil {
 			logger.Errorln(err)
-			return `{"errno": 1, "msg":", "读取Trade配置数据失败"}`
+			return `{"errno": 1, "msg":", "Trade config could not be read"}`
 		}
 
 		Option_json, err := json.Marshal(TradeOption)
 		if err != nil {
 			logger.Errorln(err)
-			return `{"errno": 1, "msg":", "解析引擎配置数据失败"}`
+			return `{"errno": 1, "msg":", "Error with trade configuration"}`
 		}
 
 		return string(Option_json)
@@ -269,13 +266,12 @@ func webui() {
 			}
 
 		} else {
-			fmt.Fprint(res, "无效的POST请求")
+			fmt.Fprint(res, "Invalid POST request")
 		}
 
-		// 更新个人信息
 		err = SaveTrade()
 		if err != nil {
-			fmt.Fprint(res, "写入Trade配置数据失败")
+			fmt.Fprint(res, "Failed to save Trade configuration")
 		}
 
 		var tradeAPI TradeAPI
@@ -284,7 +280,7 @@ func webui() {
 		} else if Option["tradecenter"] == "okcoin" {
 			tradeAPI = okcoin.NewOkcoin()
 		} else {
-			fmt.Fprint(res, "没有选择交易所名称")
+			fmt.Fprint(res, "Exchange name not selected")
 		}
 
 		var ret string
@@ -298,7 +294,7 @@ func webui() {
 
 		if msgtype == "dobuy" {
 			for i := 0; i < nbuytimes; i++ {
-				warning := "oo, 买入buy In<----限价单"
+				warning := "buy In<---- Limit oders"
 
 				if i < nbuytimes/2 {
 					arrbuyTradePrice[i] = nbuyprice - float64(i)*splitnbuyinterval
@@ -312,9 +308,9 @@ func webui() {
 				ret = tradeAPI.Buy(tradePrice, strsplitTradeAmount)
 
 				if ret != "0" {
-					fmt.Fprint(res, "交易委托成功")
+					fmt.Fprint(res, "Trade successful")
 				} else {
-					fmt.Fprint(res, "交易委托失败")
+					fmt.Fprint(res, "Trade failed")
 				}
 				logger.Infoln(warning)
 			}
@@ -328,7 +324,7 @@ func webui() {
 		}
 		if msgtype == "dosell" {
 			for i := 0; i < nselltimes; i++ {
-				warning := "oo, 卖出buy In<----限价单"
+				warning := "oo, Sell buy In<---- Limit order"
 
 				if i < nselltimes/2 {
 					arrsellTradePrice[i] = nsellprice - float64(i)*splitnsellinterval
@@ -342,9 +338,9 @@ func webui() {
 				ret = tradeAPI.Sell(tradePrice, strsplitTradeAmount)
 
 				if ret != "0" {
-					fmt.Fprint(res, "交易委托成功")
+					fmt.Fprint(res, "Trade successful")
 				} else {
-					fmt.Fprint(res, "交易委托失败")
+					fmt.Fprint(res, "Trade failed")
 				}
 				logger.Infoln(warning)
 			}

@@ -32,6 +32,5 @@ func init() {
 //xxx strategy
 func (xxxStrategy *XXXStrategy) Tick(records []Record) bool {
 	fmt.Println("empty strgatey template, you can realize your own trade strategy in here")
-	//实现自己的策略
 	return false
 }

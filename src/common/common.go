@@ -24,8 +24,8 @@ type Record struct {
 }
 
 type _MarketOrder struct {
-	Price  float64 //价格
-	Amount float64 //委单量
+	Price  float64 //Price
+	Amount float64 //Amount
 }
 
 //price from high to low: asks[0] > .....>asks[9] > bids[0] > ......> bids[9]

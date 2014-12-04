@@ -29,7 +29,7 @@ import (
 )
 
 var (
-	// 日志文件
+	// Log files
 	trade_file    = ROOT + "/log/trade.log"
 	override_file = ROOT + "/log/report"
 	info_file     = ROOT + "/log/info.log"
@@ -129,7 +129,7 @@ func Errorln(args ...interface{}) {
 		return
 	}
 	defer file.Close()
-	// 加上文件调用和行号
+	// Plus file and line number to call  (加上文件调用和行号) not sure about translation 
 	_, callerFile, line, ok := runtime.Caller(1)
 	if ok {
 		args = append([]interface{}{"[", filepath.Base(callerFile), "]", line}, args...)
@@ -158,7 +158,7 @@ func Fatalln(args ...interface{}) {
 		return
 	}
 	defer file.Close()
-	// 加上文件调用和行号
+	// Plus file and line number to call  (加上文件调用和行号) not sure about translation 
 	_, callerFile, line, ok := runtime.Caller(1)
 	if ok {
 		args = append([]interface{}{"[", filepath.Base(callerFile), "]", line}, args...)
@@ -175,7 +175,7 @@ func Fatal(args ...interface{}) {
 		return
 	}
 	defer file.Close()
-	// 加上文件调用和行号
+	// Plus file and line number to call  (加上文件调用和行号) not sure about translation 
 	_, callerFile, line, ok := runtime.Caller(1)
 	if ok {
 		args = append([]interface{}{"[", filepath.Base(callerFile), "]", line}, args...)
@@ -209,7 +209,7 @@ func Debugln(args ...interface{}) {
 			return
 		}
 		defer file.Close()
-		// 加上文件调用和行号
+		// Plus file and line number to call  (加上文件调用和行号) not sure about translation 
 		_, callerFile, line, ok := runtime.Caller(1)
 		if ok {
 			args = append([]interface{}{"[", filepath.Base(callerFile), "]", line}, args...)
@@ -239,7 +239,7 @@ func Traceln(args ...interface{}) {
 		return
 	}
 	defer file.Close()
-	// 加上文件调用和行号
+	// Plus file and line number to call  (加上文件调用和行号) not sure about translation 
 	_, callerFile, line, ok := runtime.Caller(1)
 	if ok {
 		args = append([]interface{}{"[", filepath.Base(callerFile), "]", line}, args...)

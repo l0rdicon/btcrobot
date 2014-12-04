@@ -31,7 +31,7 @@ func float2str(i float64) string {
 	return strconv.FormatFloat(i, 'f', -1, 64)
 }
 
-// 将url.Values（表单数据）转换为Model（struct）
+// url.Values（FormData）converted to Model（struct）
 func ConvertAssign(dest interface{}, form url.Values) error {
 	destType := reflect.TypeOf(dest)
 	if destType.Kind() != reflect.Ptr {
@@ -44,21 +44,19 @@ func ConvertAssign(dest interface{}, form url.Values) error {
 	destType = destValue.Type()
 	fieldNum := destType.NumField()
 	for i := 0; i < fieldNum; i++ {
-		// struct 字段的反射类型（StructField）
 		fieldType := destType.Field(i)
-		// 非导出字段不处理
+		// Non-export field does not deal with 
 		if fieldType.PkgPath != "" {
 			continue
 		}
 		tag := fieldType.Tag.Get("json")
 		fieldValue := destValue.Field(i)
 		val := form.Get(tag)
-		// 字段本身的反射类型（field type）
 		fieldValType := fieldType.Type
 		switch fieldValType.Kind() {
 		case reflect.Int:
 			if len(form[tag]) > 1 {
-				// TODO:多个值如何处理？
+				// TODO:How to deal with multiple values？
 			}
 			if val == "" {
 				continue
@@ -70,7 +68,7 @@ func ConvertAssign(dest interface{}, form url.Values) error {
 			fieldValue.SetInt(int64(tmp))
 		case reflect.String:
 			if len(form[tag]) > 1 {
-				// TODO:多个值如何处理？
+				// TODO:How to deal with multiple values？
 			}
 			fieldValue.SetString(val)
 		default:
@@ -92,9 +90,7 @@ func Struct2Map(dest map[string]interface{}, src interface{}) error {
 	srcType = srcValue.Type()
 	fieldNum := srcType.NumField()
 	for i := 0; i < fieldNum; i++ {
-		// struct 字段的反射类型（StructField）
 		fieldType := srcType.Field(i)
-		// 非导出字段不处理
 		if fieldType.PkgPath != "" {
 			continue
 		}

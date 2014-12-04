@@ -8,18 +8,18 @@ import (
 	"strings"
 )
 
-// 校验表单数据
+// Verify form data
 func Validate(data url.Values, rules map[string]map[string]map[string]string) (errMsg string) {
 	for field, rule := range rules {
 		val := data.Get(field)
-		// 检查【必填】
+		// Check for required info
 		if requireInfo, ok := rule["require"]; ok {
 			if val == "" {
 				errMsg = requireInfo["error"]
 				return
 			}
 		}
-		// 检查【长度】
+		// Check the length
 		if lengthInfo, ok := rule["length"]; ok {
 			valLen := len(val)
 			if lenRange, ok := lengthInfo["range"]; ok {
@@ -29,11 +29,11 @@ func Validate(data url.Values, rules map[string]map[string]map[string]string) (e
 				}
 			}
 		}
-		// 检查【int类型】以及可能的范围
+		// Check for type int
 		if intInfo, ok := rule["int"]; ok {
 			valInt, err := strconv.Atoi(val)
 			if err != nil {
-				errMsg = field + "类型错误！"
+				errMsg = field + "Type error！"
 				return
 			}
 			if intRange, ok := intInfo["range"]; ok {
@@ -43,7 +43,7 @@ func Validate(data url.Values, rules map[string]map[string]map[string]string) (e
 				}
 			}
 		}
-		// 检查【邮箱】
+		// Check email address
 		if emailInfo, ok := rule["email"]; ok {
 			validEmail := regexp.MustCompile(`^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$`)
 			if !validEmail.MatchString(val) {
@@ -51,10 +51,10 @@ func Validate(data url.Values, rules map[string]map[string]map[string]string) (e
 				return
 			}
 		}
-		// 检查【两值比较】
+		// Check values match 
 		if compareInfo, ok := rule["compare"]; ok {
-			compared := compareInfo["field"] // 被比较的字段
-			// 比较规则
+			compared := compareInfo["field"] // field to be compaired
+			// Comparison rules
 			switch compareInfo["rule"] {
 			case "=":
 				if val != data.Get(compared) {
@@ -71,8 +71,8 @@ func Validate(data url.Values, rules map[string]map[string]map[string]string) (e
 	return
 }
 
-// checkRange 检查范围值是否合法。
-// src为要检查的值；destRange为目标范围；msg出错时信息参数
+// checkRange of values is good
+// src value to be checked; destRange target range; msg error message when parameters
 func checkRange(src int, destRange string, msg string) (errMsg string) {
 	parts := strings.SplitN(destRange, ",", 2)
 	parts[0] = strings.TrimSpace(parts[0])

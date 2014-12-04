@@ -14,7 +14,7 @@ func Md5(text string) string {
 	return fmt.Sprintf("%x", hashMd5.Sum(nil))
 }
 
-// 产生唯一的id
+// Generate unique ID
 func GenUUID() string {
 	buf := make([]byte, 16)
 	io.ReadFull(rand.Reader, buf)

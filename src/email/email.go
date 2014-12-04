@@ -45,7 +45,7 @@ func encodeRFC2047(String string) string {
  *  mailtyoe: mail type html or text
  */
 
-// 发送电子邮件功能
+// Send email function
 func SendMail(subject, content string, tos []string) error {
 	message := `From: btc-robot
 				To: ` + strings.Join(tos, ",") + `
@@ -69,9 +69,9 @@ func SendAlertEmail(receiver, alert string) error {
 
 	auth := smtp.PlainAuth("", SecretOption["smtp_username"], SecretOption["smtp_password"], SecretOption["smtp_host"])
 
-	from := mail.Address{"BTCRobot监控中心", SecretOption["smtp_username"]}
-	to := mail.Address{"收件人", receiver}
-	title := "BTCRobot来电--->" + alert
+	from := mail.Address{"BTCRoboti Monitoring center", SecretOption["smtp_username"]}
+	to := mail.Address{"Address", receiver}
+	title := "BTCRobot Incomming Message--->" + alert
 
 	body := `
 	<html>
@@ -79,8 +79,7 @@ func SendAlertEmail(receiver, alert string) error {
 	<h3>
 	%s
 	</h3>
-	<p>
-	捐助BTC，支持开发<span style="font-size: 80%"><a href="bitcoin:1NDnnWCUu926z4wxA3sNBGYWNQD3mKyes8">1NDnnWCUu926z4wxA3sNBGYWNQD3mKyes8</a></span>
+	Donation BTC，Support Development<span style="font-size: 80%"><a href="bitcoin:1NDnnWCUu926z4wxA3sNBGYWNQD3mKyes8">1NDnnWCUu926z4wxA3sNBGYWNQD3mKyes8</a></span>
 	</p>
 	</body>
 	</html>
@@ -119,7 +118,7 @@ func SendAlertEmail(receiver, alert string) error {
 }
 
 func NoticeEmailV2() {
-	tos := []string{"78623269@qq.com", "songbohr@gmail.com"}
+	tos := []string{"78623269@qq.com", "xploited.ca@gmail.com"}
 
 	subject := "Test send email"
 
@@ -168,9 +167,9 @@ func TriggerPrice(price float64) error {
 	var alert string
 	if Option["enable_email"] == "1" {
 		if price < lowest_price {
-			alert = fmt.Sprintf("价格 %f 低于设定的阀值 %f", price, Option["lowest_price"])
+			alert = fmt.Sprintf("Price %f Below the set threshold %f", price, Option["lowest_price"])
 		} else if price > highest_price {
-			alert = fmt.Sprintf("价格 %f 超过设定的阀值 %f", price, Option["highest_price"])
+			alert = fmt.Sprintf("Price %f Over the set threshold %f", price, Option["highest_price"])
 		}
 
 		if alert != "" {

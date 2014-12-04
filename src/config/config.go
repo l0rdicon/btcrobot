@@ -29,7 +29,7 @@ import (
 	"path/filepath"
 )
 
-// 项目根目录
+// Project root directory
 var ROOT string
 var DebugEnv bool
 var Config map[string]string
@@ -68,7 +68,7 @@ func get_config_path(file string) (filepath string, err error) {
 }
 
 func load_config(file string) (config map[string]string, err error) {
-	// Load 全局配置文件
+	// Load global configuration file
 	configFile, err := get_config_path(file)
 	if err != nil {
 		return nil, (err)
@@ -193,7 +193,7 @@ func SaveSecretOption() error {
 	return save_config("/conf/secret.json", SecretOption)
 }
 
-// 获得可执行程序所在目录
+// Obtain an executable progarm directory
 func ExecutableDir() (string, error) {
 	pathAbs, err := filepath.Abs(os.Args[0])
 	if err != nil {

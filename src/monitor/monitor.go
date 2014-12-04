@@ -50,7 +50,7 @@ func backtesting() {
 		}
 	}
 
-	fmt.Println("生成 1/5/15/30/60分钟及1天 周期的后向测试报告于log/reportxxx.log文件中,请查看")
+	fmt.Println("Generating 1/5/15/30/60 minutes After the period of the report on the test log/reportxxx.log check file")
 
 	fmt.Println("back testing end ...")
 }
@@ -179,7 +179,7 @@ func RobotWorker() {
 		totalHour = 1
 	}
 
-	fmt.Println("trade robot start working...")
+	fmt.Println("trade robot starting ...")
 
 	go func() {
 		for _ = range ticker.C {
@@ -197,11 +197,11 @@ func RobotWorker() {
 		}
 	}()
 
-	logger.Infof("程序将持续运行%d小时后停止", time.Duration(totalHour))
+	logger.Infof("This program will continue to run after the %d hour stop", time.Duration(totalHour)) //Check translation 
 
 	time.Sleep(time.Duration(totalHour) * time.Hour)
 
-	logger.Infof("程序到达设定时长%d小时，停止运行。", time.Duration(totalHour))
+	logger.Infof("程序到达设定时长%d小时，停止运行。", time.Duration(totalHour)) //not sure 
 }
 
 const worker_number = 1
